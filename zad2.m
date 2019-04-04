@@ -1,30 +1,29 @@
-global chosen_gray;
+global coords chosen_gray chosen_region I;
 
 I = imread('kotek.jpg');
 I = im2double(I);
 %a=imadjust(I,[0 0.7]);
 fig = figure(1);
-imshow(I);
 [chosen_region, coords] = imcrop(I);
+coords = uint16(coords);
 chosen_gray = rgb2gray(chosen_region);
 c = uicontrol('Parent',fig,'style','slider','units','normalized','position',[0,0,0.1,1.0]);
 c.Callback = @plotSlid;
 
-figure(2)
-tmp = imshow(chosen_gray);
 
 
    
-
-
-
 function plotSlid(src,event)
-    global chosen_gray;
-    a = get(src,'value')
-    kontrast = max(max(chosen_gray)) - min(min(chosen_gray));
-    tmp_gray=chosen_gray*a;
-    figure(2);
-    imshow(tmp_gray);
+    global coords chosen_gray chosen_region I;
+    a = get(src,'value');
+    max_v = max(max(chosen_gray));
+    min_v = min(min(chosen_gray));
+    kontrast = max_v - min_v
+    tmp=(chosen_region-min_v)*a*1/kontrast;
+    figure(1);
+    hold on;
+    I(coords(2):coords(2)+coords(4)-1,coords(1):coords(1)+coords(3)-1,:) = tmp;
+    imshow(I);
     
 end
 
