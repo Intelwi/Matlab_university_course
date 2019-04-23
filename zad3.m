@@ -1,5 +1,5 @@
 scaleFactor = 0.6
-px_len = 2/110;
+pattern = 0.2;
 
 I = imread('PCB1.jpg');
 validate(I);
@@ -9,8 +9,21 @@ if(x>2750 && y>770)
     I = imresize(I, scaleFactor);
 end
 
+%wybieranie sciezki ----------------------------------
+chosen = imcrop(I);
+chosen = rgb2gray(chosen);
+chosen = imbinarize(chosen,0.1);
+%imshow(chosen)
+%odszumienie
+chosen = bwareaopen(chosen, 40);
+pad = regionprops(chosen,'BoundingBox');
+pattern_px_len = min(pad.BoundingBox(3), pad.BoundingBox(4));
+px_len = pattern/pattern_px_len;
+
+
+%obrobka obrazu i znajdowanie najwiekszego konturu ---
 I1 = rgb2gray(I);
-I1 = imbinarize(I1);
+I1 = imbinarize(I1,0.3);
 
 contours = regionprops(I1,'Area','BoundingBox');
 [maks, id] = max([contours.Area]);
@@ -20,13 +33,16 @@ xMax = xMin + bigBoundingBox(3) - 1;
 yMin = ceil(bigBoundingBox(2));
 yMax = yMin + bigBoundingBox(4) - 1;
 
+%wycinanie  ----------------------------------
 I1(1:yMin,1:end,:)=0;
 I1(yMax:end,1:end,:)=0;
 I1(1:end,1:xMin,:)=0;
 I1(1:end,xMax:end,:)=0;
 
+%odszumienie  ----------------------------------
 I1 = bwareaopen(I1, 40);
 
+%wyciecie duzego prosstokata z wektora prostokatow
 BoundingBox = regionprops(I1,'Area','BoundingBox');
 [maks, id] = max([BoundingBox.Area]);
 BoundingBox(id) = [];
@@ -35,6 +51,7 @@ BoundingBox(id) = [];
 % imshow(I1)
 % hold off
 
+%szukanie wymiarow padow  ----------------------------------
 hold on
 fig = figure(1);
 imshow(I);
