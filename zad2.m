@@ -1,11 +1,11 @@
 global coords chosen_gray chosen_region I;
 
 I = imread('kotek.jpg');
+validate(I)
 I = im2double(I);
-%a=imadjust(I,[0 0.7]);
 fig = figure(1);
 [chosen_region, coords] = imcrop(I);
-coords = uint16(coords);
+coords = int16(coords);
 chosen_gray = rgb2gray(chosen_region);
 c = uicontrol('Parent',fig,'style','slider','units','normalized','position',[0,0,0.1,1.0]);
 c.Callback = @plotSlid;
@@ -27,38 +27,7 @@ function plotSlid(src,event)
     
 end
 
-
-% function out = imadjust1(varargin)
-% 
-% %Parse inputs and initialize variables
-% [img,imageType,lowIn,highIn,lowOut,highOut,gamma] = ...
-%     parseInputs(varargin{:});
-% 
-% validateLowHigh(lowIn,highIn,lowOut,highOut);
-% gamma = validateGamma(gamma,imageType);
-% 
-% if ~isfloat(img) && numel(img) > 65536
-%     % integer data type image with more than 65536 elements
-%     out = adjustWithLUT(img,lowIn,highIn,lowOut,highOut,gamma);
-% 
-% else
-%     classin = class(img);
-%     classChanged = false;
-%     if ~isa(img,'double')
-%         classChanged = true;
-%         img = im2double(img);
-%     end
-% 
-%     if strcmp(imageType, 'intensity')
-%         out = adjustGrayscaleImage(img,lowIn,highIn,lowOut,highOut,gamma);
-%     elseif strcmp(imageType, 'indexed')
-%         out = adjustColormap(img,lowIn,highIn,lowOut,highOut,gamma);
-%     else
-%         out = adjustTruecolorImage(img,lowIn,highIn,lowOut,highOut,gamma);
-%     end
-%     
-%     if classChanged
-%         out = images.internal.changeClass(classin,out);
-%     end
-% end
-% end
+function validate(img)
+    assert(ndims(img)==3 && size(img,3)==3, 'Not proper number of dimensions.')
+    validateattributes(img, {'double' 'uint8' 'uint16' 'int16' 'single'},{});% RGB image
+end
