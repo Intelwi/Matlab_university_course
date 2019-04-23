@@ -1,5 +1,5 @@
 scaleFactor = 0.6
-px_len = 1/60;
+px_len = 2/110;
 
 I = imread('PCB1.jpg');
 validate(I);
@@ -50,8 +50,7 @@ for i=1:1:length(BoundingBox)
    text(xMin,yMin,txt,'Color','red','FontSize',10)
    rectangle('Position',[xMin yMin len height],'EdgeColor','r')
 end
-% figure(2);
-% rectangle('Position',[xMin yMin xMax-xMin yMax-yMin]);
+
 
 function validate(img)
     assert(ndims(img)==3 && size(img,3)==3, 'Not proper number of dimensions.')
