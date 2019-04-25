@@ -2,8 +2,13 @@ scaleFactor = 0.6
 pattern = 0.2;
 
 I = imread('PCB1.jpg');
+
+%sprawdzenie formatu obrazka
 validate(I);
+
 I = im2double(I);
+
+%sprawdzenie wielkosci obrazka
 [y x] = size(I);
 if(x>2750 && y>770) 
     I = imresize(I, scaleFactor);
@@ -14,17 +19,17 @@ chosen = imcrop(I);
 chosen = rgb2gray(chosen);
 chosen = imbinarize(chosen,0.1);
 %imshow(chosen)
-%odszumienie
+
+%odszumienie i wyliczenie ile mm ma pixel
 chosen = bwareaopen(chosen, 40);
 pad = regionprops(chosen,'BoundingBox');
-pattern_px_len = min(pad.BoundingBox(3), pad.BoundingBox(4));
-px_len = pattern/pattern_px_len;
+len_in_px = min(pad.BoundingBox(3), pad.BoundingBox(4));
+px_len = pattern/len_in_px;
 
 
 %obrobka obrazu i znajdowanie najwiekszego konturu ---
 I1 = rgb2gray(I);
 I1 = imbinarize(I1,0.3);
-
 contours = regionprops(I1,'Area','BoundingBox');
 [maks, id] = max([contours.Area]);
 bigBoundingBox = contours(id).BoundingBox;
@@ -59,13 +64,14 @@ for i=1:1:length(BoundingBox)
     xMin = ceil(BoundingBox(i).BoundingBox(1));
     len = ceil(BoundingBox(i).BoundingBox(3));
     len_real = round(px_len*len,3);
+    
     yMin = ceil(BoundingBox(i).BoundingBox(2));
     height = ceil(BoundingBox(i).BoundingBox(4));
     height_real = round(px_len*height,3);
     
+   rectangle('Position',[xMin yMin len height],'EdgeColor','y')
    txt = sprintf('(%g,%g)',len_real,height_real);
    text(xMin,yMin,txt,'Color','red','FontSize',10)
-   rectangle('Position',[xMin yMin len height],'EdgeColor','r')
 end
 
 
