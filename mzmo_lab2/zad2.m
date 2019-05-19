@@ -59,19 +59,21 @@ T.InputName = 'r';
 T.OutputName = 'y_';
 
 %Ty_ = getIOTransfer(T,'r','y_');
-%viewGoal(Y,T)
+req3 = TuningGoal.Margins('y',7,45);
+figure(1)
+viewGoal(req3,T)
+figure(2)
+step(T);
+figure(3)
+margin(T)
 
 req3 = TuningGoal.Margins('y',7,45);
 [a,b]=systune(T,req3,req3);
-figure(1)
-step(T);
-figure(2)
-margin(T)
-figure(3)
-step(a);
 figure(4)
-viewGoal(req3,a)
+step(a);
 figure(5)
+viewGoal(req3,a)
+figure(6)
 margin(a)
 
 
