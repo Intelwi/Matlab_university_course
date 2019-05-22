@@ -40,6 +40,7 @@ if pkt == 'a'
     [Gm,Pm,Wcg,Wcp] = margin(T);
     Wcg = Wcg/(2*pi);
     Wcp = Wcp/(2*pi);
+    
 end
 
 if pkt == 'b'
@@ -53,13 +54,14 @@ if pkt == 'b'
     T.OutputName = 'y';
     %req1 = TuningGoal.Gain('r','y',1);
     req1 = TuningGoal.MaxLoopGain('y',wo,1);
-    
+    figure(1)
+    viewGoal(req1,T)
     req2 = TuningGoal.Margins('y',1,30);
     [a,b]=systune(T,req1,req2);
-    figure(1)
-    margin(a)
     figure(2)
-    step(a)
+    margin(a)
     figure(3)
+    step(a)
+    figure(4)
     viewGoal(req1,a)
 end
